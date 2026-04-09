@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Pomodoro Flow · Focus Timer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class = "content">
+    <div class="timer-card">
+      <div class="phase-badge">
+        <div class="phase" id="phaseLabel">WORK</div>
+      </div>
+      <div class="time-display">
+        <div class="timer" id="timerDisplay">25:00</div>
+      </div>
+      <div class="action-area">
+        <button class="primary-btn" id="mainActionBtn">▶ START</button>
+      </div>
+      <div style="display: flex; justify-content: center; gap: 1rem;">
+        <button class="reset-btn" id="resetBtn">⟳ Reset session</button>
+      </div>
+      <div class="footer-note">
+        <div class="duration-settings">
+          <label>🍅 Work: 
+            <input type="number" id="workDurationInput" value="25" min="1" max="99" step="1"> min
+          </label>
+          <label>☕ Break: 
+            <input type="number" id="breakDurationInput" value="5" min="1" max="99" step="1"> min
+          </label>
+        </div>
+        <div>🔔 Sound plays when interval ends → click [Next interval]</div>
+      </div>
+    </div>
+  </div>
+  <footer class="product-info-widget">
+    <div class="info-card">
+        <div class="info-item">
+            <span class="info-icon" aria-hidden="true"></span>
+            <span class="info-label">Author:</span>
+            <span class="info-value"><a href = "https://github.com/Covch">Covch</a></span>
+        </div>
+        <div class="info-item">
+            <span class="info-icon" aria-hidden="true"></span>
+            <span class="info-label">Created:</span>
+            <span class="info-value">2026</span>
+        </div>
+        <div class="info-item">
+            <span class="info-icon" aria-hidden="true"></span>
+            <span class="info-label">Ver:</span>
+            <span class="info-value version-highlight">0.0.1</span>
+        </div>
+    </div>
+  </footer>
+<script src="script.js"></script>
+</body>
+</html>
