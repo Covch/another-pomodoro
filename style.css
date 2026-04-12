@@ -174,7 +174,7 @@ body {
     justify-content: center;
     align-items: baseline;
     gap: 1rem 2rem;
-    background: #1e1e2f;
+    background: rgba(22, 34, 48, 0.75);
     padding: 0.85rem 1.8rem;
     border-radius: 60px;
     font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
