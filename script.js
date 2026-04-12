@@ -28,8 +28,19 @@ class PeriodState {
 let appState = AppState.INIT;
 let periodState = PeriodState.WORK;
 let timerIntervalId = null;
+/**
+ * Время начала текущего интервала
+ */
+let startDateTime = null;
+/**
+ * Время конца текущего интервала
+ */
+let targetEndDateTime = null;
 let workSeconds = 25 * 60;
 let breakSeconds = 5 * 60;
+/**
+ * Отображаемое оставшееся время в секундах
+ */
 let timeLeftSeconds = workSeconds;
 
 // ------------------- Helper: format mm:ss -------------------
@@ -94,19 +105,32 @@ function startTimer() {
   if (!timeLeftSeconds || timeLeftSeconds === workSeconds || timeLeftSeconds === breakSeconds || timeLeftSeconds <= 0) {
     timeLeftSeconds = periodState === PeriodState.WORK ? workSeconds : breakSeconds;
   }
-  startCountdown();
+  startDateTime = Date.now();
+  targetEndDateTime = startDateTime + timeLeftSeconds * 1000;
+  startCountdown(500);
 }
 
-function startCountdown() {
+function resumeTimer() {
+  targetEndDateTime = Date.now() + timeLeftSeconds * 1000;
+  startCountdown(500);
+}
+
+function startCountdown(delayMs) {
   if (timerIntervalId) clearInterval(timerIntervalId);
-  timerIntervalId = setInterval(() => {
-    if (timeLeftSeconds <= 1) {
+  
+  function updateTimer() {
+    timeLeftSeconds = Math.max(0, Math.ceil((targetEndDateTime - Date.now()) / 1000));
+    refreshTimerUI();
+    
+    if (timeLeftSeconds <= 0) {
+      clearInterval(timerIntervalId);
       handleIntervalEnd();
-    } else {
-      timeLeftSeconds--;
-      refreshTimerUI();
     }
-  }, 1000);
+  }
+  updateTimer()
+  if (appState === AppState.RUNNING) {
+    timerIntervalId = setInterval(updateTimer, delayMs);
+  }
 }
 
 function handleIntervalEnd() {
@@ -141,8 +165,8 @@ function fullReset() {
 // ------------------- Event handlers -------------------
 function onMainButtonClick() {
   if (appState === AppState.INIT) {
-    startTimer();
     appState = AppState.RUNNING;
+    startTimer();
     refreshUI();
     return;
   }
@@ -153,8 +177,8 @@ function onMainButtonClick() {
     return;
   }
   if (appState === AppState.PAUSE) {
-    startTimer();
     appState = AppState.RUNNING;
+    resumeTimer();
     refreshUI();
     return;
   }
@@ -182,11 +206,27 @@ function updateDurationsFromInputs() {
     fullReset()
 }
 
+function updateIntervalOnVisibilityChange() {
+  if (appState != AppState.RUNNING) {
+    return;
+  }
+  if (document.hidden) {
+    startCountdown(60000);
+  } else {
+    startCountdown(500);
+  }
+  if (!document.hidden) {
+    refreshTimerUI();
+  }
+}
+
+
 // ------------------- Attach listeners -------------------
 mainBtn.addEventListener("click", onMainButtonClick);
 resetBtn.addEventListener("click", onReset);
 workInput.addEventListener('change', updateDurationsFromInputs);
 breakInput.addEventListener('change', updateDurationsFromInputs);
+document.addEventListener('visibilitychange', updateIntervalOnVisibilityChange);
 
 // ------------------- Initialisation -------------------
 fullReset(); // ensures clean start
