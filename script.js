@@ -42,6 +42,10 @@ let breakSeconds = 5 * 60;
  * Отображаемое оставшееся время в секундах
  */
 let timeLeftSeconds = workSeconds;
+/**
+ * Кол-во оставшихся минут, указываемых в названии вкладки
+ */
+let minsLeftInTitle = null;
 
 // ------------------- Helper: format mm:ss -------------------
 function formatTime(seconds) {
@@ -51,9 +55,19 @@ function formatTime(seconds) {
   return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
+function getMins(seconds) {
+  if (isNaN(seconds) || seconds < 0) seconds = 0;
+  return Math.floor(seconds / 60);
+}
+
 // ------------------- UI update -------------------
 function refreshUI() {
-  phaseLabelEl.textContent = periodState === PeriodState.WORK ? "🍅 WORK" : "☕ BREAK";
+  if (periodState === PeriodState.WORK) {
+    phaseLabelEl.textContent = "🍅 WORK";
+  } else {
+    phaseLabelEl.textContent = "☕ BREAK";
+  }
+  
   refreshTimerUI()
   switch (appState) {
     case AppState.INIT:
@@ -72,6 +86,10 @@ function refreshUI() {
 }
 
 function refreshTimerUI() {
+  if (minsLeftInTitle != getMins(timeLeftSeconds)) {
+    minsLeftInTitle = getMins(timeLeftSeconds)
+    document.title = (periodState === PeriodState.WORK ? "🍅" : "☕") + minsLeftInTitle + " min left"
+  }
   timerDisplayEl.textContent = formatTime(timeLeftSeconds);
 }
 
