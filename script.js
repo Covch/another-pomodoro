@@ -6,6 +6,7 @@ const phaseLabelEl = document.getElementById("phaseLabel");
 const timerDisplayEl = document.getElementById("timerDisplay");
 const mainBtn = document.getElementById("mainActionBtn");
 const resetBtn = document.getElementById("resetBtn");
+const skipBtn = document.getElementById("skipBtn");
 // Поля ввода временных интервалов
 const workInput = document.getElementById('workDurationInput');
 const breakInput = document.getElementById('breakDurationInput');
@@ -64,8 +65,10 @@ function getMins(seconds) {
 function refreshUI() {
   if (periodState === PeriodState.WORK) {
     phaseLabelEl.textContent = "🍅 WORK";
+    setEmojiFavicon("🍅")
   } else {
     phaseLabelEl.textContent = "☕ BREAK";
+    setEmojiFavicon("☕")
   }
   
   refreshTimerUI()
@@ -88,7 +91,7 @@ function refreshUI() {
 function refreshTimerUI() {
   if (minsLeftInTitle != getMins(timeLeftSeconds)) {
     minsLeftInTitle = getMins(timeLeftSeconds)
-    document.title = (periodState === PeriodState.WORK ? "🍅" : "☕") + minsLeftInTitle + " min left"
+    document.title = minsLeftInTitle + " min left"
   }
   timerDisplayEl.textContent = formatTime(timeLeftSeconds);
 }
@@ -139,6 +142,11 @@ function startCountdown(delayMs) {
   function updateTimer() {
     timeLeftSeconds = Math.max(0, Math.ceil((targetEndDateTime - Date.now()) / 1000));
     refreshTimerUI();
+
+    if (delayMs !== 500 && timeLeftSeconds < 80) {
+      startCountdown(500);
+      return;
+    }
     
     if (timeLeftSeconds <= 0) {
       clearInterval(timerIntervalId);
@@ -209,6 +217,11 @@ function onReset() {
   fullReset();
 }
 
+function onSkip() {
+  timeLeftSeconds = 0;
+  proceedToNextInterval();
+}
+
 // Функция обновления внутренних переменных из полей
 function updateDurationsFromInputs() {
     let newWork = parseInt(workInput.value, 10);
@@ -245,6 +258,7 @@ resetBtn.addEventListener("click", onReset);
 workInput.addEventListener('change', updateDurationsFromInputs);
 breakInput.addEventListener('change', updateDurationsFromInputs);
 document.addEventListener('visibilitychange', updateIntervalOnVisibilityChange);
+skipBtn.addEventListener("click", onSkip);
 
 // ------------------- Initialisation -------------------
 fullReset(); // ensures clean start
