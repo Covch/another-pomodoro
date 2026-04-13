@@ -65,8 +65,10 @@ function getMins(seconds) {
 function refreshUI() {
   if (periodState === PeriodState.WORK) {
     phaseLabelEl.textContent = "🍅 WORK";
+    setEmojiFavicon("🍅")
   } else {
     phaseLabelEl.textContent = "☕ BREAK";
+    setEmojiFavicon("☕")
   }
   
   refreshTimerUI()
@@ -89,7 +91,7 @@ function refreshUI() {
 function refreshTimerUI() {
   if (minsLeftInTitle != getMins(timeLeftSeconds)) {
     minsLeftInTitle = getMins(timeLeftSeconds)
-    document.title = (periodState === PeriodState.WORK ? "🍅" : "☕") + minsLeftInTitle + " min left"
+    document.title = minsLeftInTitle + " min left"
   }
   timerDisplayEl.textContent = formatTime(timeLeftSeconds);
 }
