@@ -6,6 +6,7 @@ const phaseLabelEl = document.getElementById("phaseLabel");
 const timerDisplayEl = document.getElementById("timerDisplay");
 const mainBtn = document.getElementById("mainActionBtn");
 const resetBtn = document.getElementById("resetBtn");
+const skipBtn = document.getElementById("skipBtn");
 // Поля ввода временных интервалов
 const workInput = document.getElementById('workDurationInput');
 const breakInput = document.getElementById('breakDurationInput');
@@ -209,6 +210,11 @@ function onReset() {
   fullReset();
 }
 
+function onSkip() {
+  timeLeftSeconds = 0;
+  proceedToNextInterval();
+}
+
 // Функция обновления внутренних переменных из полей
 function updateDurationsFromInputs() {
     let newWork = parseInt(workInput.value, 10);
@@ -245,6 +251,7 @@ resetBtn.addEventListener("click", onReset);
 workInput.addEventListener('change', updateDurationsFromInputs);
 breakInput.addEventListener('change', updateDurationsFromInputs);
 document.addEventListener('visibilitychange', updateIntervalOnVisibilityChange);
+skipBtn.addEventListener("click", onSkip);
 
 // ------------------- Initialisation -------------------
 fullReset(); // ensures clean start
