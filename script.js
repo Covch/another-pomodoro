@@ -142,11 +142,6 @@ function startCountdown(delayMs) {
   function updateTimer() {
     timeLeftSeconds = Math.max(0, Math.ceil((targetEndDateTime - Date.now()) / 1000));
     refreshTimerUI();
-
-    if (delayMs !== 500 && timeLeftSeconds < 80) {
-      startCountdown(500);
-      return;
-    }
     
     if (timeLeftSeconds <= 0) {
       clearInterval(timerIntervalId);
